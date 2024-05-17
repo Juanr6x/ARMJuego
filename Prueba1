@@ -1,0 +1,54 @@
+.data
+    hangman_part1: .asciz "  +---+\n"
+    hangman_part2: .asciz "  |   |\n"
+    hangman_part3: .asciz "  O   |\n"
+    hangman_part4: .asciz " /|\\  |\n"
+    hangman_part5: .asciz " / \\  |\n"
+    hangman_part6: .asciz "      |\n"
+    hangman_part7: .asciz "=========\n"
+
+.text
+.global _start
+
+_start:
+    ldr r0, =hangman_part1
+    bl print_string
+
+    ldr r0, =hangman_part2
+    bl print_string
+
+    ldr r0, =hangman_part3
+    bl print_string
+
+    ldr r0, =hangman_part4
+    bl print_string
+
+    ldr r0, =hangman_part5
+    bl print_string
+
+    ldr r0, =hangman_part6
+    bl print_string
+
+    ldr r0, =hangman_part7
+    bl print_string
+
+    /* Exit the program */
+    mov r7, #1      /* sys_exit */
+    mov r0, #0      /* exit code */
+    svc #0          /* make syscall */
+
+print_string:
+    push {r1, r2, r7}       /* Save registers */
+1:  
+    ldrb r1, [r0], #1       /* Load byte from string and increment pointer */
+    cmp r1, #0              /* Check if end of string */
+    beq 2f                  /* If end, branch to label 2 */
+    
+    mov r2, #1              /* File descriptor: stdout */
+    mov r7, #4              /* syscall number: sys_write */
+    svc #0                  /* Make syscall */
+    
+    b 1b                    /* Loop back to print next character */
+2:  
+    pop {r1, r2, r7}        /* Restore registers */
+    bx lr                   /* Return from subroutine */
